@@ -1,8 +1,13 @@
+using FormulationImpactApi.Services;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+// Scoped lifetime is appropriate here: a new instance is created per HTTP request,
+// which suits a stateless calculation service with no shared mutable state.
+builder.Services.AddScoped<FormulationService>();
 
 // AddOpenApi() registers the built-in .NET 10 OpenAPI document generator.
 // This replaces the Swashbuckle/Swagger package that was the default in .NET 8.
