@@ -1,0 +1,4 @@
+One issue to flag before you continue
+
+The prompts hardcode http://localhost:5000 as the API URL in the Angular service (F2). Your API actually runs on http://localhost:5275 per launchSettings.json. You'll need to reconcile that before the frontend can talk to the backend — either change the Angular service URL or add a http://localhost:5000 profile to launchSettings.json.
+

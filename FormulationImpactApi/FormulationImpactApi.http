@@ -1,0 +1,6 @@
+@FormulationImpactApi_HostAddress = http://localhost:5275
+
+GET {{FormulationImpactApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

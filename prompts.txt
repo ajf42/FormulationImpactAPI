@@ -1,0 +1,213 @@
+One recommended adjustment on the frontend: bump to **Angular 19** (current stable). The meaningful change is that `HttpClientModule` is deprecated — Angular 19 uses `provideHttpClient()` in `app.config.ts` instead. The F1 and F2 prompts reflect this. Everything else is refinement.
+
+---
+
+**B1 — Scaffold**
+```
+I am building a .NET 10 Web API called FormulationImpactApi. This is the 
+first step of a multi-step build — do not add any business logic, models, 
+or endpoints yet.
+
+Do the following:
+1. Create a new .NET 10 Web API project using the command:
+   dotnet new webapi --use-controllers -n FormulationImpactApi
+   The --use-controllers flag is required — do not use minimal API style
+2. .NET 10 uses Microsoft.AspNetCore.OpenApi built-in. Configure it using 
+   AddOpenApi() in Program.cs. Then install the Scalar.AspNetCore NuGet 
+   package and add the Scalar UI endpoint so the API is browsable at 
+   /scalar/v1 in development. Add a brief comment explaining why Scalar 
+   replaces the Swagger UI that was default in .NET 8
+3. Configure CORS to allow all requests from http://localhost:4200. 
+   Add a brief comment above the CORS configuration explaining what it 
+   does and why
+
+When done, confirm the exact commands to install dependencies and start 
+the server, and tell me what URL the Scalar UI will be available at.
+```
+
+---
+
+**B2 — Models**
+```
+We are building FormulationImpactApi targeting .NET 10. The project is 
+scaffolded and running. Do not modify Program.cs or add any endpoints yet.
+
+Add a Models folder containing exactly two DTO classes:
+
+FormulationRequest.cs with these properties, all with brief inline comments:
+- BaselineSolvent (string)
+- ReplacementSolvent (string)
+- SubstitutionPercent (double) — percentage of baseline replaced, 0 to 100
+- BatchSizeKg (double)
+- BaselineVocGramsPerKg (double)
+- ReplacementVocGramsPerKg (double)
+- BaselineCostPerKg (double)
+- ReplacementCostPerKg (double)
+
+FormulationResult.cs with these properties, all with brief inline comments:
+- VocDeltaGrams (double) — positive means VOC increase, negative means reduction
+- CostDelta (double) — positive means more expensive
+- RegulatoryFlag (bool) — true if VOC increase exceeds threshold
+- Summary (string) — plain English description of the change
+
+Use C# 14 primary constructor syntax if it simplifies the DTOs, but only 
+if it does not reduce readability. Show me both complete files when done.
+```
+
+---
+
+**B3 — Service**
+```
+We are building FormulationImpactApi targeting .NET 10. Models are defined. 
+Do not add a controller yet.
+
+Create Services/FormulationService.cs that takes a FormulationRequest 
+and returns a FormulationResult. Use exactly this logic:
+
+- VocDeltaGrams = (ReplacementVocGramsPerKg - BaselineVocGramsPerKg) 
+  * BatchSizeKg * (SubstitutionPercent / 100)
+- CostDelta = (ReplacementCostPerKg - BaselineCostPerKg) 
+  * BatchSizeKg * (SubstitutionPercent / 100)
+- RegulatoryFlag = true if VocDeltaGrams > 50
+- Summary = a single plain English sentence that names both solvents, 
+  states the substitution percent, and describes whether VOC and cost 
+  went up or down
+
+Add a brief comment above each calculation explaining what it represents.
+
+Register FormulationService as a scoped service in Program.cs using the 
+.NET 10 minimal hosting model. Do not use the legacy WebHost pattern.
+
+Show me the complete service file and the relevant Program.cs addition 
+when done.
+```
+
+---
+
+**B4 — Controller**
+```
+We are building FormulationImpactApi targeting .NET 10. Models and 
+FormulationService are complete and registered.
+
+Add Controllers/FormulationController.cs with:
+- Route: api/formulation
+- One POST endpoint at /impact
+- Inject FormulationService via constructor
+- Accept a FormulationRequest from the request body using [FromBody]
+- Call the service and return the FormulationResult as a 200 OK JSON response
+- Add brief comments on the constructor injection and the endpoint
+
+Do not use minimal API syntax — this must be a controller class inheriting 
+from ControllerBase with the [ApiController] attribute.
+Do not modify the service or models.
+
+When done, show me the complete controller file and give me a sample 
+JSON request body I can use to test the endpoint in the Scalar UI.
+```
+
+---
+
+**F1 — Scaffold**
+```
+I am building an Angular 19 project called formulation-impact-ui. This is 
+the first step of a multi-step build — do not add any components, services, 
+or features yet.
+
+Do the following:
+1. Generate a new Angular 19 project using the Angular CLI:
+   ng new formulation-impact-ui --routing=false --style=css --standalone
+   Standalone is the Angular 19 default — do not use NgModule architecture
+2. In app.config.ts, add provideHttpClient() to the providers array so 
+   HttpClient is available application-wide. Note: HttpClientModule is 
+   deprecated in Angular 19 and must not be used
+3. Do not modify app.component.html beyond confirming the default loads
+
+When done, give me the exact commands to generate the project and start 
+the dev server, and confirm what URL it will run on.
+```
+
+---
+
+**F2 — Service**
+```
+We are building formulation-impact-ui on Angular 19 using standalone 
+components. The project is scaffolded and running on localhost:4200. 
+Do not modify any components yet.
+
+Do the following:
+1. Create src/app/models/formulation.models.ts containing two TypeScript 
+   interfaces that exactly mirror the API:
+
+FormulationRequest with: baselineSolvent, replacementSolvent, 
+substitutionPercent, batchSizeKg, baselineVocGramsPerKg, 
+replacementVocGramsPerKg, baselineCostPerKg, replacementCostPerKg — 
+all typed as string or number as appropriate
+
+FormulationResult with: vocDeltaGrams (number), costDelta (number), 
+regulatoryFlag (boolean), summary (string)
+
+2. Create src/app/services/formulation.service.ts that:
+- Is decorated with @Injectable({ providedIn: 'root' })
+- Injects HttpClient using the inject() function, not constructor injection,
+  as this is the Angular 19 preferred pattern
+- Has one method: calculateImpact(request: FormulationRequest) that 
+  POSTs to http://localhost:5000/api/formulation/impact and returns 
+  an Observable<FormulationResult>
+- Has a brief comment explaining the method and the inject() pattern
+
+Show me both complete files when done.
+```
+
+---
+
+**F3 — Form**
+```
+We are building formulation-impact-ui on Angular 19 using standalone 
+components. The service and models are complete.
+
+Replace the contents of app.component.ts and app.component.html with 
+a reactive form as follows:
+- Import ReactiveFormsModule directly in the component's imports array 
+  (standalone pattern — no NgModule)
+- 8 labeled form fields corresponding to all FormulationRequest properties
+- Clear human-readable labels (e.g. "Baseline Solvent Name", 
+  "Substitution Percent (%)", "Batch Size (kg)")
+- Number fields should use type="number" inputs with Validators.required 
+  and Validators.min(0)
+- A Submit button that is disabled while the form is invalid
+- On submit, call FormulationService.calculateImpact() with the form values 
+  and log the full response object to the console
+- Inject FormulationService using inject() not constructor injection
+- Add a brief comment in the component explaining the form setup and 
+  the submit handler
+
+Do not add results display yet — console.log only.
+
+When done show me both complete files and tell me exactly what I should 
+see in the browser console when I submit a valid form.
+```
+
+---
+
+**F4 — Results Panel**
+```
+We are building formulation-impact-ui on Angular 19 using standalone 
+components. The form is complete and submitting successfully to the API.
+
+Add a results panel to app.component.html and app.component.ts that:
+- Is hidden until a successful API response is received using @if (Angular 19 
+  control flow syntax — do not use *ngIf)
+- Displays VocDeltaGrams labeled as "VOC Impact (grams)" — green text 
+  if negative, red text if positive
+- Displays CostDelta labeled as "Cost Impact ($)" — same green/red logic
+- Shows a yellow warning box with the text "Regulatory Review Required" 
+  using @if (regulatoryFlag), hidden otherwise
+- Displays the summary string in plain text below the metrics
+
+Use only a minimal style block in app.component.css — no UI libraries. 
+Add brief comments in the template marking each @if block and explaining 
+what condition it guards.
+
+Show me the complete updated app.component.ts, app.component.html, 
+and app.component.css when done.
+```
