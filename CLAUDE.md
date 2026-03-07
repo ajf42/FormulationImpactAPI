@@ -1,5 +1,13 @@
 # FormulationImpactApi — CLAUDE.md
 
+## Mandatory on Every Change
+Every code change Claude makes to this repository must be accompanied by:
+1. Updated inline documentation for any modified logic
+2. Tests that cover the new or changed behavior
+3. README.md updated to reflect any changes to the API, architecture, or project structure
+
+Do not consider a task complete until all three are done.
+
 ## What This Is
 A .NET 10 Web API that calculates the environmental and financial impact of
 solvent substitutions in industrial paint and coatings formulations. Built as
@@ -77,3 +85,25 @@ Registered route prefix: api/formulation on the controller
   the DTO property names (check camelCase vs PascalCase)
 - Scalar UI not loading usually means MapScalarApiReference() is inside a
   conditional block that isn't running in the current environment
+
+## Slash Commands
+Each build step is available as a slash command in Claude Code.
+Type the command name to load the full structured prompt for that step.
+
+Backend (run in order):
+  /scaffold-api      — scaffold .NET 10 project with OpenAPI and CORS
+  /add-models        — add FormulationRequest and FormulationResult DTOs
+  /add-service       — add FormulationService with calculation logic
+  /add-controller    — add FormulationController with POST /impact endpoint
+
+Frontend (run in order, after backend is complete):
+  /scaffold-ui       — scaffold Angular 19 project with provideHttpClient()
+  /add-ui-service    — add TypeScript models and Angular HTTP service
+  /add-form          — build reactive form component (console.log output only)
+  /add-results       — add results panel with @if conditional display
+
+Command files live in .claude/commands/. Each file is a self-contained prompt
+with full context so any step can be re-run independently if needed.
+
+Per the Mandatory on Every Change rule above, each command must produce
+inline documentation and test coverage before it is considered complete.

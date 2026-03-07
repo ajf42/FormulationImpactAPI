@@ -151,7 +151,7 @@ regulatoryFlag (boolean), summary (string)
 - Injects HttpClient using the inject() function, not constructor injection,
   as this is the Angular 19 preferred pattern
 - Has one method: calculateImpact(request: FormulationRequest) that 
-  POSTs to http://localhost:5000/api/formulation/impact and returns 
+  POSTs to http://localhost:5275/api/formulation/impact and returns
   an Observable<FormulationResult>
 - Has a brief comment explaining the method and the inject() pattern
 
