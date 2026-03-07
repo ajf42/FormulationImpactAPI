@@ -1,0 +1,79 @@
+<h1>Formulation Impact Calculator</h1>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label for="baselineSolvent">Baseline Solvent Name</label>
+    <input id="baselineSolvent" type="text" formControlName="baselineSolvent" />
+  </div>
+
+  <div>
+    <label for="replacementSolvent">Replacement Solvent Name</label>
+    <input id="replacementSolvent" type="text" formControlName="replacementSolvent" />
+  </div>
+
+  <div>
+    <label for="substitutionPercent">Substitution Percent (%)</label>
+    <input id="substitutionPercent" type="number" formControlName="substitutionPercent" />
+  </div>
+
+  <div>
+    <label for="batchSizeKg">Batch Size (kg)</label>
+    <input id="batchSizeKg" type="number" formControlName="batchSizeKg" />
+  </div>
+
+  <div>
+    <label for="baselineVocGramsPerKg">Baseline VOC (g/kg)</label>
+    <input id="baselineVocGramsPerKg" type="number" formControlName="baselineVocGramsPerKg" />
+  </div>
+
+  <div>
+    <label for="replacementVocGramsPerKg">Replacement VOC (g/kg)</label>
+    <input id="replacementVocGramsPerKg" type="number" formControlName="replacementVocGramsPerKg" />
+  </div>
+
+  <div>
+    <label for="baselineCostPerKg">Baseline Cost ($/kg)</label>
+    <input id="baselineCostPerKg" type="number" formControlName="baselineCostPerKg" />
+  </div>
+
+  <div>
+    <label for="replacementCostPerKg">Replacement Cost ($/kg)</label>
+    <input id="replacementCostPerKg" type="number" formControlName="replacementCostPerKg" />
+  </div>
+
+  <button type="submit" [disabled]="form.invalid">Calculate Impact</button>
+
+</form>
+
+<!-- Results panel: hidden until the API returns a successful response -->
+@if (result(); as r) {
+
+  <section class="results">
+    <h2>Results</h2>
+
+    <!-- VOC metric: green if negative (emissions reduced), red if positive (emissions increased) -->
+    <p>
+      <strong>VOC Impact (grams):</strong>
+      <span [class.positive]="r.vocDeltaGrams > 0" [class.negative]="r.vocDeltaGrams < 0">
+        {{ r.vocDeltaGrams }}
+      </span>
+    </p>
+
+    <!-- Cost metric: green if negative (cheaper), red if positive (more expensive) -->
+    <p>
+      <strong>Cost Impact ($):</strong>
+      <span [class.positive]="r.costDelta > 0" [class.negative]="r.costDelta < 0">
+        {{ r.costDelta }}
+      </span>
+    </p>
+
+    <!-- Regulatory warning: only shown when the substitution exceeds the VOC threshold -->
+    @if (r.regulatoryFlag) {
+      <div class="regulatory-warning">Regulatory Review Required</div>
+    }
+
+    <p>{{ r.summary }}</p>
+  </section>
+
+}

@@ -1,0 +1,20 @@
+.results {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+}
+
+.negative {
+  color: green;
+}
+
+.positive {
+  color: red;
+}
+
+.regulatory-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem 0;
+}
