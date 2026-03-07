@@ -64,7 +64,7 @@
     <p>
       <strong>Cost Impact ($):</strong>
       <span [class.positive]="r.costDelta > 0" [class.negative]="r.costDelta < 0">
-        {{ r.costDelta }}
+        {{ r.costDelta.toFixed(2) }}
       </span>
     </p>
 

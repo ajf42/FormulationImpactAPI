@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormulationRequest, FormulationResult } from '../models/formulation.models';
 
-const API_URL = 'http://localhost:5000/api/formulation/impact';
+const API_URL = 'http://localhost:5275/api/formulation/impact';
 
 @Injectable({ providedIn: 'root' })
 export class FormulationService {
